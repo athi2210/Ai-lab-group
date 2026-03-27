@@ -2,6 +2,12 @@
 
 Understanding key concepts of machine learning and some basic familiarity with deep learning frameworks is necessary. In this praktikum, pytorch would be used to realize the first real world application of neural net **LeNet**.
 
+## Setup
+You will need a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+Requirements.txt 
 ---
 
 ## Learning Objectives:
