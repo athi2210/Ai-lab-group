@@ -1,8 +1,10 @@
 # Lab Report – Matrix Multiplication on CPU
 **Course:** AI Accelerators (AIA)
 **Lab:** Praktikum 1
-**Team members:** _(fill in)_
-**Date:** _(fill in)_
+
+**Team members:** Athithya Mariyanayagam, Naim Hadzic, Jonah Rivera
+
+**Date:** 07.05.2026
 
 ---
 
