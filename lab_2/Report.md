@@ -21,7 +21,7 @@
 | L1 cache size (per core) | hw.l1icachesize: 131072  128KB I 64KB D|
 | L2 cache size (per core) |  hw.l2cachesize: 4194304 |
 | L3 cache size (shared) |  |
-| Peak theoretical throughput (GFLOP/s) | 448 GFLOPS/s|
+| Peak theoretical throughput (GFLOP/s) | 448 GFLOPS/s??|
 
 **How did you calculate peak throughput?**
 
@@ -76,15 +76,16 @@ No speedup
 
 | Tile size | N=1024 (GFLOP/s) | N=4096 (GFLOP/s) |
 |---|---|---|
-| 32 | 16.3| |
-| 64 | 21.67| |
-| 128 | 23.3| |
-| 256 | 23.3 | |
+| 32 | 16.3| Not feasible|
+| 64 | 21.67| Not feasible|
+| 128 | 23.3| Not feasible|
+| 256 | 23.3 | Not feasible|
 
-**Best tile size:** 128
+**Best tile size:** 64
 
 **Why does this tile size work best for your machine?**
 
+64 kb LVL 1 Cache -> 64x 64 float 32
 ---
 
 ## Task 5 – Multithreading
@@ -97,7 +98,6 @@ No speedup
 | 2 | 31| 1.34|
 | 4 | 70| 3|
 | 8 | 90| 3.9|
-| _(max physical cores)_ | | |
 
 **Does throughput scale linearly with threads?** Why / why not?
 No (non parallelizable overhead (Amdahls law))
@@ -106,7 +106,7 @@ No (non parallelizable overhead (Amdahls law))
 ## Task 6 – Performance Analysis
 
 **Is your implementation compute-bound or memory-bound?** Justify with arithmetic intensity (FLOPs / bytes).
-$AI=\frac{N^3}{N^2} = 1024$ -> Technically compute bound but for the naive implementation it behaves like memorybound because of cache misses
+$AI=\frac{N^3}{N^2*4*3} = 1024/12$ -> Technically compute bound but for the naive implementation it behaves like memorybound because of cache misses
 
 **Comparison vs. PyTorch (N=4096):**
 

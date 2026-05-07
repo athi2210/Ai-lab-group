@@ -19,7 +19,7 @@
 
 #define num_threads 8
 const int num_iterations = 4;
-#define JB 128 // Tile size divides matrix size
+#define JB 64 // Tile size divides matrix size
 
 // ============================================================================
 // IMPLEMENTATION 1: NAIVE MATRIX MULTIPLICATION
@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
     srand(42);
     printf("MatMul Benchmark: Square Matrix\n");
 
-    int sizes[] = {1024}; //{512, 256, 128, 64};
+    int sizes[] = {1024, 512, 256, 128, 64};
     int n = sizeof(sizes) / sizeof(sizes[0]);
 
     printf("%-8s %-15s %-15s %-15s %-15s\n", "Size", "Naive", "Reordered", "Tiled", "Parallel");
