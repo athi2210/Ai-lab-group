@@ -15,13 +15,13 @@
 | CPU model | Apple M2 |
 | Number of cores / threads | 8/8 |
 | Base / Boost clock speed (GHz) | 2.42/­3.5 |
-| SIMD ISA (SSE4.2 / AVX2 / AVX-512 …) | |
-| SIMD width (bits / floats per vector) | |
-| MAC units per core | |
-| L1 cache size (per core) | hw.l1icachesize: 131072 |
-| L2 cache size (per core) | hw.l1dcachesize: 65536 |
-| L3 cache size (shared) | hw.l2cachesize: 4194304 |
-| Peak theoretical throughput (GFLOP/s) | |
+| SIMD ISA (SSE4.2 / AVX2 / AVX-512 …) | ARM NEON / Advanced SIMD|
+| SIMD width (bits / floats per vector) | 128 bit / 4× FP32 pro Vektor|
+| MAC units per core | 4 |
+| L1 cache size (per core) | hw.l1icachesize: 131072  128KB I 64KB D|
+| L2 cache size (per core) |  hw.l2cachesize: 4194304 |
+| L3 cache size (shared) |  |
+| Peak theoretical throughput (GFLOP/s) | 448 GFLOPS/s|
 
 **How did you calculate peak throughput?**
 
@@ -47,10 +47,8 @@ _(formula: cores × clock × SIMD_width × MACs_per_cycle)_
 **Why does this ordering perform best?**
 
 _(Explain in terms of spatial locality and cache reuse of A, B, and C)_
-A[i][k] is reused and 
-B[k][j] is used and then the next entry B[k][j+1]
-It also uses the immediate next entry for C
 
+The i-k-j ordering maximizes cache reuse: the innermost j-loop accesses B sequentially (unit stride), the middle k-loop keeps one A row in L1 cache across iterations, and C is updated in row-major order. This minimizes cache misses and memory traffic compared to other orderings.
 
 ---
 
@@ -69,7 +67,7 @@ It also uses the immediate next entry for C
 **Did you add any `#pragma` hints to the source?** If yes, which ones?
 
 **What speedup did you achieve? Why?**
-
+No speedup
 ---
 
 ## Task 4 – Loop Tiling
@@ -78,12 +76,12 @@ It also uses the immediate next entry for C
 
 | Tile size | N=1024 (GFLOP/s) | N=4096 (GFLOP/s) |
 |---|---|---|
-| 32 | | |
-| 64 | | |
-| 128 | | |
-| 256 | | |
+| 32 | 16.3| |
+| 64 | 21.67| |
+| 128 | 23.3| |
+| 256 | 23.3 | |
 
-**Best tile size:** ___
+**Best tile size:** 128
 
 **Why does this tile size work best for your machine?**
 
@@ -93,37 +91,41 @@ It also uses the immediate next entry for C
 
 > Measure scaling as you increase the number of OpenMP threads.
 
-| Threads | N=4096 (GFLOP/s) | Speedup |
+| Threads | N=1024 (GFLOP/s) | Speedup |
 |---|---|---|
-| 1 | | 1.0× |
-| 2 | | |
-| 4 | | |
-| 8 | | |
+| 1 | 23| 1.0× |
+| 2 | 31| 1.34|
+| 4 | 70| 3|
+| 8 | 90| 3.9|
 | _(max physical cores)_ | | |
 
 **Does throughput scale linearly with threads?** Why / why not?
-
+No (non parallelizable overhead (Amdahls law))
 ---
 
 ## Task 6 – Performance Analysis
 
 **Is your implementation compute-bound or memory-bound?** Justify with arithmetic intensity (FLOPs / bytes).
+$AI=\frac{N^3}{N^2} = 1024$ -> Technically compute bound but for the naive implementation it behaves like memorybound because of cache misses
 
 **Comparison vs. PyTorch (N=4096):**
 
 | Implementation | GFLOP/s | % of PyTorch |
 |---|---|---|
-| Naive C | | |
-| Best optimised C | | |
-| PyTorch (CPU) | | 100% |
+| Naive C | 1.81| 0%|
+| Best optimised C | 90|7% |
+| PyTorch (CPU) | 1221| 100% |
 
 **What is the gap and why does it exist?**
+
+Pytorch is heavily optimized and uses all of the cpus resources
 
 ---
 
 ## Task 7 – Key Takeaways
 
 _Write 3–5 sentences summarising the most important lessons learned from this lab._
+Optimizing algorithms for good memory/cache usage is crucial. People shouldnt think python is slow when using optimized libraries.
 
 ---
 

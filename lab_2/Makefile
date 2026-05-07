@@ -1,7 +1,7 @@
 # ─── Makefile for Lab 1: Matrix Multiplication on CPU ───────────────────────
 CC = gcc
-CFLAGS = -O3
-LDFLAGS = -lm #-lpthread
+CFLAGS = -O3 -march=native -ffast-math -fopenmp-simd -pthread
+LDFLAGS = -lm -pthread
 
 # Targets
 all: matmul
